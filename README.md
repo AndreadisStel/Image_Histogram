@@ -53,7 +53,7 @@ cd Image_Histogram
 ---
 
 ## Usage
-The code is modular and can be imported as a library, with the `__main__` section serving as a demonstration workflow.
+The code is modular and can be imported as a library, with the `__main__` section serving as a demonstration workflow.\
 Run the script with Python: 
 
 ```bash
