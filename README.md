@@ -1,6 +1,7 @@
-# Image_Histogram
+# Histogram Equalization and Matching Toolkit
 
-This project implements histogram modification techniques for grayscale images, including histogram equalization and histogram matching. Three modes are supported: **greedy**, **non-greedy**, and **post-disturbance**.
+This repository provides a Python implementation of several histogram-based image enhancement techniques for grayscale images. It includes histogram equalization, histogram matching, and multiple transformation modes: **greedy**, **non-greedy**, and **post-disturbance**.  
+The toolkit is designed for experimentation and research in image processing.
 
 ---
 
@@ -28,12 +29,23 @@ This project implements histogram modification techniques for grayscale images, 
 
 ## Dependencies
 The code requires the following Python packages:
+- `Python 3.8+`
 - `numpy`
 - `Pillow` (`PIL`)
 - `matplotlib`
-- `typing` (built-in in Python 3.5+)
 
 Install dependencies using pip:
 
 ```bash
 pip install numpy pillow matplotlib
+```
+
+---
+
+## Installation
+Clone or download this repository, and make sure to adjust the input and reference images paths and names.
+
+```bash
+git clone https://github.com/AndreadisStel/Image_Histogram
+cd Image_Histogram
+```
