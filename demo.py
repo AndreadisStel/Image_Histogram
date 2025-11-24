@@ -1,12 +1,10 @@
 import numpy as np
 from PIL import Image
-from typing import Dict
 import matplotlib.pyplot as plt
 
 
-
 # === hist_utils === #
-def calculate_hist_of_img(img_array: np.ndarray, return_normalized: bool) -> Dict:
+def calculate_hist_of_img(img_array: np.ndarray, return_normalized: bool) -> dict:
     flat = img_array.flatten()
     hist = {}
     for val in flat:
@@ -17,17 +15,18 @@ def calculate_hist_of_img(img_array: np.ndarray, return_normalized: bool) -> Dic
             hist[key] /= total
     return dict(sorted(hist.items()))
 
-def apply_hist_modification_transform(img_array: np.ndarray, modification_transform: Dict) -> np.ndarray:
+
+def apply_hist_modification_transform(img_array: np.ndarray, modification_transform: dict) -> np.ndarray:
     flat = img_array.flatten()
     modified_flat = np.array([modification_transform[val] for val in flat])
     return modified_flat.reshape(img_array.shape)
-
 
 
 # === helpful functions for results === #
 def save_img(img_array: np.ndarray, filename: str):
     img_uint8 = (img_array * 255).clip(0, 255).astype(np.uint8)
     Image.fromarray(img_uint8).save(filename)
+
 
 def plot_histogram(img_array: np.ndarray, title: str):
     hist = calculate_hist_of_img(img_array, return_normalized=True)
@@ -39,9 +38,8 @@ def plot_histogram(img_array: np.ndarray, title: str):
     plt.show()
 
 
-
 # === The core of the algorithm === #
-def perform_hist_modification(img_array: np.ndarray, hist_ref: Dict, mode: str) -> np.ndarray:
+def perform_hist_modification(img_array: np.ndarray, hist_ref: dict, mode: str) -> np.ndarray:
     if mode == "post-disturbance":
         # Add uniform noise in [-d/2, d/2]
         unique_levels = np.sort(np.unique(img_array))
@@ -101,8 +99,6 @@ def perform_hist_modification(img_array: np.ndarray, hist_ref: Dict, mode: str) 
     return apply_hist_modification_transform(img_array, mod_transform)
 
 
-
-
 # === hist_modif === #
 def perform_hist_eq(img_array: np.ndarray, mode: str) -> np.ndarray:
     hist = calculate_hist_of_img(img_array, return_normalized=False)
@@ -111,18 +107,24 @@ def perform_hist_eq(img_array: np.ndarray, mode: str) -> np.ndarray:
     hist_ref = {lvl: 1 / L for lvl in levels}
     return perform_hist_modification(img_array, hist_ref, mode)
 
+
 def perform_hist_matching(img_array: np.ndarray, img_array_ref: np.ndarray, mode: str) -> np.ndarray:
     hist_ref = calculate_hist_of_img(img_array_ref, return_normalized=True)
     return perform_hist_modification(img_array, hist_ref, mode)
 
 
-
 # === Testing === #
 if __name__ == "__main__":
-    img = Image.open("hw1_images/input_img.jpg").convert("L")
+
+    # Adjust path
+    path_input = "input_img.jpg"
+    path_ref = "ref_img.jpg"
+    output_folder = "output_imgs/"
+
+    img = Image.open(path_input).convert("L")
     input_img = np.array(img).astype(float) / 255.0
 
-    img_ref = Image.open("hw1_images/ref_img.jpg").convert("L")
+    img_ref = Image.open(path_ref).convert("L")
     ref_img = np.array(img_ref).astype(float) / 255.0
 
     # Equalization
@@ -130,21 +132,20 @@ if __name__ == "__main__":
     eq_non_greedy = perform_hist_eq(input_img, "non-greedy")
     eq_post = perform_hist_eq(input_img, "post-disturbance")
 
-    save_img(eq_greedy, "equalized_greedy.png")
-    save_img(eq_non_greedy, "equalized_nongreedy.png")
-    save_img(eq_post, "equalized_post.png")
+    save_img(eq_greedy, f"{output_folder}equalized_greedy.png")
+    save_img(eq_non_greedy, f"{output_folder}equalized_nongreedy.png")
+    save_img(eq_post, f"{output_folder}equalized_post.png")
 
     # Matching
     matched_greedy = perform_hist_matching(input_img, ref_img, "greedy")
     matched_non_greedy = perform_hist_matching(input_img, ref_img, "non-greedy")
     matched_post = perform_hist_matching(input_img, ref_img, "post-disturbance")
 
-    save_img(matched_greedy, "matched_greedy.png")
-    save_img(matched_non_greedy, "matched_nongreedy.png")
-    save_img(matched_post, "matched_post.png")
+    save_img(matched_greedy, f"{output_folder}matched_greedy.png")
+    save_img(matched_non_greedy, f"{output_folder}matched_nongreedy.png")
+    save_img(matched_post, f"{output_folder}matched_post.png")
 
-    
-    #save_img(input_img, "input_img_bw.png")
+    # save_img(input_img, "input_img_bw.png")
 
     # Histograms
     plot_histogram(ref_img, "Reference Image Histogram")
