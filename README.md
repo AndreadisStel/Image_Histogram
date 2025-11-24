@@ -43,9 +43,56 @@ pip install numpy pillow matplotlib
 ---
 
 ## Installation
-Clone or download this repository, and make sure to adjust the input and reference images paths and names.
+Clone or download this repository:
 
 ```bash
 git clone https://github.com/AndreadisStel/Image_Histogram
 cd Image_Histogram
 ```
+
+---
+
+## Usage
+The code is modular and can be imported as a library, with the `__main__` section serving as a demonstration workflow.
+Run the script with Python: 
+
+```bash
+python demo.py
+```
+
+This will:
+
+- Load input_img.jpg and ref_img.jpg.
+- Perform histogram equalization and matching in three modes:
+  - greedy
+  - non-greedy
+  - post-disturbance
+- Save the resulting images:
+  - Equalized: equalized_greedy.png, equalized_nongreedy.png, equalized_post.png
+  - Matched: matched_greedy.png, matched_nongreedy.png, matched_post.png
+- Plot the histograms for visualization.
+
+---
+
+## Examples 
+
+```python
+from PIL import Image
+import numpy as np
+from hist_modif import perform_hist_eq, perform_hist_matching, save_img
+
+img = Image.open("hw1_images/input_img.jpg").convert("L")
+input_img = np.array(img).astype(float) / 255.0
+
+img_ref = Image.open("hw1_images/ref_img.jpg").convert("L")
+ref_img = np.array(img_ref).astype(float) / 255.0
+
+eq_greedy = perform_hist_eq(input_img, "greedy")
+save_img(eq_greedy, "equalized_greedy.png")
+
+matched_post = perform_hist_matching(input_img, ref_img, "post-disturbance")
+save_img(matched_post, "matched_post.png")
+```
+
+## License
+
